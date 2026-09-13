@@ -1,0 +1,42 @@
+{
+  "assets": [
+    {
+      "id": "educational-2u-server",
+      "implementation": [
+        "src/detail-models.ts",
+        "src/server-geometry.ts",
+        "src/room-server.ts"
+      ],
+      "origin": "Separately authored procedural geometry for Datacenter Atlas",
+      "reference": "https://www.dell.com/support/manuals/en-us/poweredge-r760/per760_ism_pub/inside-the-system?guid=guid-043d9f52-a16e-4494-a65a-128c47fd4ea4&lang=en-us",
+      "externalGeometryImported": false,
+      "fidelity": "Schematic; not official Dell CAD, no dimension or configuration equivalence claimed",
+      "units": "arbitrary visualization units",
+      "documentation": "docs/server-reference.md",
+      "roomIntegration": "Merged by cover layer and material; shared geometry across 48 nodes, independent selection materials. Scaled to each schematic inventory envelope."
+    },
+    {
+      "id": "floor-architectures",
+      "implementation": [
+        "src/detail-models.ts",
+        "src/room-floor.ts"
+      ],
+      "origin": "Separately authored procedural geometry for Datacenter Atlas",
+      "externalGeometryImported": false,
+      "fidelity": "Educational floor geometry. Room has full schematic support/perimeter grid; standalone detail remains simplified. No structural calculation or thermal simulation.",
+      "units": "arbitrary visualization units",
+      "loadCapacity": null
+    },
+    {
+      "id": "room-42u-rack",
+      "implementation": [
+        "src/atlas.ts",
+        "src/rack-model.ts"
+      ],
+      "origin": "Separately authored procedural geometry for Datacenter Atlas",
+      "externalGeometryImported": false,
+      "fidelity": "42U schematic mounting layout, blanking, cable managers and leveling feet. Front/rear guides are not approved clearances.",
+      "units": "arbitrary visualization units"
+    }
+  ]
+}

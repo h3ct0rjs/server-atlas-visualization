@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Complete room and explorer interaction regression coverage",
+    "bodyFile": "01.md",
+    "url": "https://github.com/h3ct0rjs/server-atlas-visualization/issues/1"
+  },
+  {
+    "title": "Finish responsive and keyboard accessibility checks",
+    "bodyFile": "02.md",
+    "url": "https://github.com/h3ct0rjs/server-atlas-visualization/issues/2"
+  },
+  {
+    "title": "Profile scene resources and load detail explorers on demand",
+    "bodyFile": "03.md",
+    "url": "https://github.com/h3ct0rjs/server-atlas-visualization/issues/3"
+  },
+  {
+    "title": "Synchronize floor detail geometry with the room and add service openings",
+    "bodyFile": "04.md",
+    "url": "https://github.com/h3ct0rjs/server-atlas-visualization/issues/4"
+  },
+  {
+    "title": "Add hot/cold aisle orientation, airflow paths, and containment",
+    "bodyFile": "05.md",
+    "url": "https://github.com/h3ct0rjs/server-atlas-visualization/issues/5"
+  },
+  {
+    "title": "Add overhead and underfloor service routes with leakage examples",
+    "bodyFile": "06.md",
+    "url": "https://github.com/h3ct0rjs/server-atlas-visualization/issues/6"
+  }
+]

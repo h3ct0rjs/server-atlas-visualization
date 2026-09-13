@@ -1,0 +1,7 @@
+:root{
+ --color-paper:#ffffff;--color-canvas:#f0f2f4;--color-ink:#202a32;--color-muted:#606c77;--color-rule:#dce1e5;--color-soft:#f5f6f7;--color-accent:#273c4b;--color-accent-ink:#ffffff;--color-focus:#31698e;--color-grid:#dce2e7;
+ --color-racks:#53616d;--color-compute:#547a89;--color-network:#a57026;--color-power:#856d92;--color-cooling:#458178;--color-selected:#54bada;--color-inset:#24343d;--color-led:#7cdebe;--color-error:#9c3939;--color-backdrop:#202a3255;
+ --color-server-metal:#87969c;--color-server-dark:#17252b;--color-server-board:#315c50;--color-server-chip:#233236;--color-server-gold:#b7a46c;--color-server-indicator:#a1cbb5;
+ --font-display:'Avenir Next','Segoe UI',sans-serif;--font-body:'Avenir Next','Segoe UI',sans-serif;--font-mono:'SFMono-Regular',Consolas,monospace;
+ --space-xs:4px;--space-sm:8px;--space-md:16px;--space-lg:24px;--space-xl:32px;--radius-sm:6px;--radius-md:12px;--dur-fast:120ms;--ease-out:cubic-bezier(.2,.7,.3,1);
+}
