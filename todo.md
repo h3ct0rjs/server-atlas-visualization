@@ -1,6 +1,6 @@
 # Datacenter Atlas — pending work
 
-Updated: 2026-09-13
+Updated: 2026-09-16
 
 Server internals, room floor integration, and rack detail are complete. The next priorities are verification, floor-model consistency, airflow/containment, and service routing. The remaining items form the backlog; they are not all committed to the next development pass.
 
@@ -102,4 +102,14 @@ See `docs/model-and-floor-research.md` for the existing source shortlist and fin
 - [ ] Review bundle splitting and lazy loading; the production build currently reports a large-bundle advisory.
 - [ ] Keep the README, research notes, asset manifest, verification record, and this backlog aligned with shipped behavior.
 
-Public hosting, purchasing models, and connecting live infrastructure are not part of the currently requested work.
+Cloudflare hosting for datacenter-atlas.h3ct0rjs.dev is now requested. Purchasing models and connecting live infrastructure remain outside the requested scope.
+
+## 7. Cloudflare deployment
+
+- [x] Add Workers Static Assets configuration for the requested subdomain.
+- [x] Add PR validation and main-branch deployment of the tested build through GitHub Actions.
+- [x] Document secrets, custom-domain prerequisites, verification, and rollback.
+- [x] Configure CLOUDFLARE_ACCOUNT_ID in GitHub Actions.
+- [ ] Configure a dedicated CLOUDFLARE_API_TOKEN for unattended GitHub Actions deployment.
+- [x] Verify active Cloudflare zone/custom-domain bindings and complete the first deployment with Wrangler OAuth.
+- [x] Confirm HTTPS, current build assets, and room/server/floor navigation on the production domain.
