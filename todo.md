@@ -1,6 +1,6 @@
 # Datacenter Atlas — pending work
 
-Updated: 2026-09-15
+Updated: 2026-09-16
 
 Server internals, room floor integration, and rack detail are complete. The next priorities are verification, floor-model consistency, airflow/containment, and service routing. The remaining items form the backlog; they are not all committed to the next development pass.
 
@@ -109,6 +109,7 @@ Cloudflare hosting for datacenter-atlas.h3ct0rjs.dev is now requested. Purchasin
 - [x] Add Workers Static Assets configuration for the requested subdomain.
 - [x] Add PR validation and main-branch deployment of the tested build through GitHub Actions.
 - [x] Document secrets, custom-domain prerequisites, verification, and rollback.
-- [ ] Configure Cloudflare credentials in GitHub Actions.
-- [ ] Verify subdomain ownership/conflicts in Cloudflare and complete the first deployment.
-- [ ] Confirm HTTPS and room/server/floor views on the production domain.
+- [x] Configure CLOUDFLARE_ACCOUNT_ID in GitHub Actions.
+- [ ] Configure a dedicated CLOUDFLARE_API_TOKEN for unattended GitHub Actions deployment.
+- [x] Verify active Cloudflare zone/custom-domain bindings and complete the first deployment with Wrangler OAuth.
+- [x] Confirm HTTPS, current build assets, and room/server/floor navigation on the production domain.

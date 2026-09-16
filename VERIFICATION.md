@@ -54,3 +54,10 @@ The sample is schematic and has no live operational data.
 - Wrangler local preview served the production build; scripts/check-deployment.mjs verified current HTML and both hashed JS/CSS assets at http://127.0.0.1:8788/.
 - Workflow validates PRs without deployment credentials; main deploys the validated artifact with repository/environment secrets. Actions are pinned by SHA.
 - Cloudflare authentication is unavailable locally and GitHub has no Cloudflare secrets yet. Production deployment, custom-domain binding, TLS, and browser smoke checks on the public hostname remain unverified. DNS resolves the hostname already; exact record versus wildcard ownership/conflict must be checked in the Cloudflare dashboard before activation.
+
+## First Cloudflare deployment — 2026-09-16
+
+- Wrangler OAuth login completed; h3ct0rjs.dev was verified active in the authenticated account, with no existing Worker custom-domain binding for the target hostname.
+- Published version eda0b372-e890-4dae-ab64-5426b06612b1 to datacenter-atlas.h3ct0rjs.dev.
+- HTTPS smoke script verified the current HTML and both hashed assets. Browser checked room → server → room → floor → room; inspected the rendered room screenshot.
+- GitHub CLOUDFLARE_ACCOUNT_ID is configured. A dedicated CLOUDFLARE_API_TOKEN is still required for automatic deployments; PR #7 remains open. Local OAuth credentials have not been copied to GitHub.
