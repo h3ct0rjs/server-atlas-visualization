@@ -65,3 +65,7 @@ npm run build
 ```
 
 Tests validate equipment references, redundant logical fabric endpoints, search filtering, and server containment within rack bounds. Browser verification details are recorded in `VERIFICATION.md`.
+
+## Production deployment
+
+Cloudflare Workers Static Assets is configured for `datacenter-atlas.h3ct0rjs.dev`. GitHub Actions validates pull requests and deploys the tested build on pushes to `main`. First activation requires the Cloudflare secrets and domain check described in [docs/deployment.md](docs/deployment.md).

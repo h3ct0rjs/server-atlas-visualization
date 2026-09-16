@@ -47,3 +47,10 @@ The sample is schematic and has no live operational data.
 - Room servers/switches now align with their declared mounting units. Vertical PDUs are positioned behind the servers. Each rack has leveling feet; caster variants are not modeled.
 - Floor panels under equipment remain seated. Floor and service guides hide during separation; the floor also hides during isolation. The standalone floor explorer remains a separate, more simplified teaching model.
 - Long-run GPU behavior, physical-device gestures, exhaustive responsive/keyboard coverage, and direct canvas panel-picking regression remain pending. No structural capacities or approved service distances are assigned. Production bundle advisory remains (approximately 747 kB minified).
+
+## Cloudflare CI/CD preparation — 2026-09-15
+
+- Nineteen tests pass after upgrading Vite to 8.3.0 and adding pinned Wrangler 4.131.1. Production build and Wrangler dry-run pass; the existing large-bundle advisory remains. npm install's audit reports zero vulnerabilities.
+- Wrangler local preview served the production build; scripts/check-deployment.mjs verified current HTML and both hashed JS/CSS assets at http://127.0.0.1:8788/.
+- Workflow validates PRs without deployment credentials; main deploys the validated artifact with repository/environment secrets. Actions are pinned by SHA.
+- Cloudflare authentication is unavailable locally and GitHub has no Cloudflare secrets yet. Production deployment, custom-domain binding, TLS, and browser smoke checks on the public hostname remain unverified. DNS resolves the hostname already; exact record versus wildcard ownership/conflict must be checked in the Cloudflare dashboard before activation.
