@@ -1,4 +1,5 @@
-export type Part = {id:string;name:string;group:string;size:[number,number,number];at:[number,number,number];offset:[number,number,number];color:string;description:string;role:string;mode?:'raised'|'slab';cover?:boolean};
+import {FLOOR,floorSupports,type FloorShape} from './floor-kit.ts';
+export type Part = {id:string;name:string;group:string;size:[number,number,number];at:[number,number,number];offset:[number,number,number];color:string;description:string;role:string;mode?:'raised'|'slab';cover?:boolean;floorShape?:FloorShape;parentPanel?:string};
 const dell='https://www.dell.com/support/manuals/en-us/poweredge-r760/per760_ism_pub/inside-the-system?guid=guid-043d9f52-a16e-4494-a65a-128c47fd4ea4&lang=en-us';
 export const references={server:dell,floor:'https://download.schneider-electric.com/files?p_Doc_Ref=SPD_SADE-5TNQYN_EN&p_File_Name=SADE-5TNQYN_R3_EN.pdf&p_enDocType=White+Paper'};
 export const serverParts:Part[]=[];
@@ -25,23 +26,22 @@ add('controller','Storage controller','Storage',[.7,.09,.6],[-.2,.23,.25],[-.4,1
 add('shroud','Air shroud','Cooling',[3.7,.05,2.8],[0,.66,-.55],[0,2.6,-.6],'compute','The air shroud directs cooling air over the processors and memory. Use Show shroud independently of Remove lid; select it in the index to inspect it.','Airflow guidance',{cover:true});
 export function floorParts(mode:'raised'|'slab'):Part[]{
  const parts:Part[]=[];
- const push=(id:string,name:string,group:string,size:Part['size'],at:Part['at'],offset:Part['offset'],color:string,description:string,role:string,cover=false)=>parts.push({id,name,group,size,at,offset,color,description,role,cover});
- push('slab','Structural slab','Structure',[9,.32,8],[0,-1.25,0],[0,0,0],'racks','The structural floor supports the installation. Suitability depends on the building, equipment mass, contact points, and delivery route. No load capacity has been assigned to this sample.','Building support');
+ const push=(id:string,name:string,group:string,size:Part['size'],at:Part['at'],offset:Part['offset'],color:string,description:string,role:string,extra:Partial<Part>={})=>parts.push({id,name,group,size,at,offset,color,description,role,...extra});
+ push('slab','Structural slab','Structure',[6.1,FLOOR.slabThickness,5.1],[0,(mode==='raised'?FLOOR.raisedSlabTop:0)-FLOOR.slabThickness/2,0],[0,0,0],'racks','The structural slab supports the installation. Its building load capacity is separate from panel, concentrated contact, and rolling load ratings; none are assigned here.','Building support');
  if(mode==='raised'){
  for(let x=0;x<6;x++)for(let z=0;z<5;z++){
- const px=(x-2.5)*1.4,pz=(z-2)*1.4,vent=x===2||x===3;
- push(`tile-${x}-${z}`,`${vent?'Perforated':'Solid'} panel ${x+1}.${z+1}`,'Floor panels',[1.36,.09,1.36],[px,0,pz],[0,vent?1.6:.8,0],vent?'cooling':'compute',vent?'This supply panel illustrates air delivery from the underfloor plenum into a cold aisle. Open area and air volume must be selected for the real cooling design.':'A removable access panel forms the walking surface. Its panel rating is only one part of the floor assembly; pedestals, stringers, slab, and local equipment contacts also matter.',vent?'Supply air outlet':'Access surface',true);
- push(`pedestal-${x}-${z}`,`Pedestal ${x+1}.${z+1}`,'Understructure',[.07,1.05,.07],[px-.68,-.57,pz-.68],[0,0,0],'racks','Adjustable supports transfer load from the raised floor to the structural slab. Their spacing, bracing, and ratings are specific to the installed system.','Load transfer');
+  const px=x-2.5,pz=z-2,vent=x===2||x===3,service=x===0&&z===4;
+  const id=`tile-${x}-${z}`,offset:Part['offset']=[0,vent?1.6:.8,0];
+  push(id,`${service?'Service opening':vent?'Perforated':'Solid'} panel ${x+1}.${z+1}`,'Floor panels',[FLOOR.panelSize,FLOOR.panelThickness,FLOOR.panelSize],[px,FLOOR.panelY,pz],offset,vent?'cooling':'compute',service?'A true opening passes services through this panel. Its seal surrounds a central cable aperture; no solid panel lies beneath the opening.':vent?'Open supply slots deliver air from the plenum. Actual open area and air volume depend on the site cooling design.':'A removable access panel forms the walking surface. Its rating does not replace assessment of supports, slab, or equipment contacts.',service?'Service penetration':vent?'Supply air outlet':'Access surface',{cover:!(x===1&&(z===1||z===3)),floorShape:service?'service':vent?'vent':'solid'});
+  if(service)push('grommet','Sealed cable opening','Services',[FLOOR.grommetOuter,FLOOR.grommetHeight,FLOOR.grommetOuter],[px,FLOOR.panelY+FLOOR.grommetLocalY,pz],offset,'inset','A seal closes part of the panel opening while preserving a central cable aperture. Properly fitted seals reduce unintended air leakage; this schematic does not predict leakage rates.','Leakage control',{floorShape:'grommet',parentPanel:id});
  }
- for(let z=0;z<6;z++)push(`stringer-${z}`,`Stringer ${z+1}`,'Understructure',[8.4,.07,.07],[0,-.12,(z-2.5)*1.4],[0,.25,0],'racks','Horizontal supports connect pedestals and support panel edges. The cutaway simplifies the full support grid.','Panel edge support');
- push('cable-tray','Underfloor cable tray','Services',[.6,.16,6.6],[-3,-.72,0],[-1,0,0],'network','Cable routes share limited underfloor space. Congestion can obstruct cooling air when this void is used as a supply plenum.','Cable routing');
- push('grommet','Sealed cable opening','Services',[.3,.13,.3],[-2.25,.04,2.6],[0,.9,0],'power','Sealing around cable penetrations reduces unintended air leakage from a supply plenum. This is a separate schematic example, not a machined hole in the panel mesh.','Leakage control');
+ for(const support of floorSupports(6,5))push(support.id,support.name,'Understructure',support.size,support.at,[0,0,0],'racks',support.kind==='stringer'?'Stringers connect the complete perimeter and interior support grid in both directions.':'Pedestals and base plates transfer panel loads to the slab. Spacing, bracing, and ratings belong to the installed system.',support.kind==='stringer'?'Panel edge support':'Load transfer');
+ push('cable-tray','Underfloor cable tray','Services',[.4,.12,4.3],[-2.5,-.44,0],[-1,0,0],'network','Cable routing shares limited plenum space. This schematic tray is aligned with the service panel; congestion can obstruct supply air.','Cable routing');
  }else{
- push('overhead','Overhead cable tray','Services',[.65,.16,6.5],[-2.8,2.8,0],[-1,.8,0],'network','Overhead trays route cables without occupying an underfloor air path. Access, support, separation, and clearances still need a site design.','Cable routing');
- push('row-cooler','Row cooling unit','Cooling',[1,2.5,1.3],[3.15,.16,0],[1,0,0],'cooling','This example uses row-based air cooling on a slab. A raised floor is not required for every cooling architecture.','Room heat removal');
+ push('overhead','Overhead cable tray','Services',[.4,.12,4.3],[-2.5,2.8,0],[-1,.8,0],'network','Overhead trays route services without an underfloor void. Support and separation require a site design.','Cable routing');
+ push('row-cooler','Row cooling unit','Cooling',[.7,2.5,1.1],[2.55,1.25,0],[1,0,0],'cooling','A cooling unit illustrates heat removal on a slab. Cooling architecture does not require a raised floor.','Room heat removal');
  }
- const base=mode==='raised'?.05:-1.09;
- for(let i=0;i<2;i++)push(`rack-foot-${i}`,`Rack contact ${i+1}`,'Loads',[.28,.2,.28],[-2,base+.1,(i-.5)*2],[0,.2,0],'power','Equipment loads enter the floor at discrete feet or casters. Concentrated and rolling loads must be assessed separately; weight divided by footprint does not certify suitability.','Concentrated load');
+ for(let i=0;i<2;i++)push(`rack-foot-${i}`,`Rack contact ${i+1}`,'Loads',[.28,.2,.28],[-1.5,.1,(i-.5)*2],[0,.2,0],'power','Equipment loads enter the floor at discrete feet or casters. Concentrated contact and rolling loads require separate assessment. Weight divided by footprint alone does not certify suitability.','Concentrated load');
  return parts;
 }
 export function partPosition(part:Part,amount:number):Part['at']{return part.at.map((n,i)=>n+part.offset[i]*amount) as Part['at'];}
