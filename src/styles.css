@@ -20,3 +20,7 @@
 .supply-key{color:var(--color-airflow-supply)}.return-key{color:var(--color-airflow-return)}.airflow-settings a{color:var(--color-focus)}
 
 .atlas .airflow-settings{top:94px;bottom:135px;max-height:none}.atlas .airflow-settings .setting-check{margin:4px 0;white-space:normal}@media(max-width:59.99rem){.atlas .airflow-settings{top:160px;bottom:175px}}
+
+.load-note summary{cursor:pointer;min-height:44px;padding:10px 0;font-size:12px}.load-note dl{margin:0}.load-note dl>div{display:block;padding:8px 0;border-top:1px solid var(--color-rule)}.load-note dt{font-weight:600}.load-note dd{margin:4px 0 0;color:var(--color-muted);line-height:1.5}
+
+.floor-focus-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.floor-focus-actions button{font-size:11px;white-space:normal}
