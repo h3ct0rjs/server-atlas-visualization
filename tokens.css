@@ -5,3 +5,5 @@
  --font-display:'Avenir Next','Segoe UI',sans-serif;--font-body:'Avenir Next','Segoe UI',sans-serif;--font-mono:'SFMono-Regular',Consolas,monospace;
  --space-xs:4px;--space-sm:8px;--space-md:16px;--space-lg:24px;--space-xl:32px;--radius-sm:6px;--radius-md:12px;--dur-fast:120ms;--ease-out:cubic-bezier(.2,.7,.3,1);
 }
+
+:root {--color-airflow-supply:#087dba;--color-airflow-return:#c15b20;}

@@ -37,6 +37,17 @@
       "externalGeometryImported": false,
       "fidelity": "42U schematic mounting layout, blanking, cable managers and leveling feet. Front/rear guides are not approved clearances.",
       "units": "arbitrary visualization units"
+    },
+    {
+      "id": "room-airflow-containment",
+      "implementation": [
+        "src/airflow-visuals.ts"
+      ],
+      "origin": "Separately authored procedural curves, particles, labels and containment",
+      "externalGeometryImported": false,
+      "fidelity": "Illustrative circulation only. No CFD, pressure, temperature, performance or containment certification implied.",
+      "reference": "https://www.energy.gov/sites/default/files/2024-07/best-practice-guide-data-center-design_0.pdf",
+      "units": "arbitrary visualization units"
     }
   ]
 }

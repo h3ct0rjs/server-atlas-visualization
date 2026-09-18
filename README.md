@@ -69,3 +69,9 @@ Tests validate equipment references, redundant logical fabric endpoints, search 
 ## Production deployment
 
 Cloudflare Workers Static Assets is configured for `datacenter-atlas.h3ct0rjs.dev`. GitHub Actions validates pull requests and deploys the tested build on pushes to `main`. First activation requires the Cloudflare secrets and domain check described in [docs/deployment.md](docs/deployment.md).
+
+### Room airflow tour
+
+Open **Airflow tour** for independently controlled supply (blue spheres), return (amber dashes), and transparent cold-aisle containment. Both rack rows face inward; their equipment, rear PDUs, and clearance guides rotate together. Switch between underfloor supply on a raised floor and overhead supply over a slab. Pause preserves directional arrows; reduced-motion preferences and background tabs stop movement. Isolation, separation, or hiding racks/cooling hides the overlay. These authored paths explain circulation, not CFD or temperature predictions.
+
+Reference: [DOE Best Practices Guide for Energy-Efficient Data Center Design](https://www.energy.gov/sites/default/files/2024-07/best-practice-guide-data-center-design_0.pdf).
