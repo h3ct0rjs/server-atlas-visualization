@@ -1,6 +1,6 @@
 # Datacenter Atlas — pending work
 
-Updated: 2026-09-16
+Updated: 2026-09-18
 
 Server internals, room floor integration, and rack detail are complete. The next priorities are verification, floor-model consistency, airflow/containment, and service routing. The remaining items form the backlog; they are not all committed to the next development pass.
 
@@ -11,7 +11,7 @@ Six focused issues are published in [h3ct0rjs/server-atlas-visualization](https:
 - Room explorer: 88 schematic objects; all 48 compute/storage nodes now reuse the detailed server assembly with an open-cover toggle.
 - Server explorer: 36 selectable components, removable covers, separation control, search, and explanatory airflow arrows.
 - Floor explorer: raised-floor and slab examples with selectable components.
-- Nineteen model/data/label/connection/room-integration tests and the production build pass.
+- Twenty-four model/data/label/connection/room-integration tests and the production build pass.
 - The updated server geometry, labels, presets, focus, search and cover controls have been checked in the browser. Responsive label bounds were checked at 320 / 375 / 414 / 768 px; physical touch and exhaustive accessibility checks remain pending.
 - No external vendor CAD has been imported. Current geometry is separately authored and schematic.
 
@@ -62,8 +62,9 @@ Browser access resumed for this update. Previous usage-limit interruption no lon
 - [x] Add a complete room support grid and perimeter supports with seated panels over equipment footprints.
 - [ ] Improve service penetrations with real openings and synchronize the standalone floor detail model.
 - [x] Lift and reseat individual unloaded room panels by clicking or using the service-panel selector.
-- [ ] Show hot/cold aisle orientation and distinguish air supply from return paths.
-- [ ] Add containment, sealed cable openings, and overhead versus underfloor routing.
+- [x] Show hot/cold aisle orientation and distinguish animated air supply from return paths.
+- [x] Add cold-aisle containment and overhead versus underfloor air supply examples.
+- [ ] Add sealed cable openings and physical service routing.
 - [x] Represent rack leveling feet and floor contact locations; caster variants remain optional.
 - [ ] Keep slab, panel, concentrated-load, and rolling-load properties separate; leave unknown capacities unspecified.
 - [ ] Add explanatory obstruction/leakage examples without presenting them as CFD or structural calculations.
@@ -110,6 +111,6 @@ Cloudflare hosting for datacenter-atlas.h3ct0rjs.dev is now requested. Purchasin
 - [x] Add PR validation and main-branch deployment of the tested build through GitHub Actions.
 - [x] Document secrets, custom-domain prerequisites, verification, and rollback.
 - [x] Configure CLOUDFLARE_ACCOUNT_ID in GitHub Actions.
-- [ ] Configure a dedicated CLOUDFLARE_API_TOKEN for unattended GitHub Actions deployment.
+- [x] Configure a dedicated CLOUDFLARE_API_TOKEN for unattended GitHub Actions deployment.
 - [x] Verify active Cloudflare zone/custom-domain bindings and complete the first deployment with Wrangler OAuth.
 - [x] Confirm HTTPS, current build assets, and room/server/floor navigation on the production domain.

@@ -22,7 +22,7 @@ The Vite build is hosted by Cloudflare Workers Static Assets. Only `dist/` is up
 4. Check the exact subdomain in Cloudflare DNS and Workers Domains & Routes. DNS currently resolves this hostname, which might come from a wildcard; DNS lookup alone cannot establish whether a dedicated record exists. Resolve any conflicting dedicated record or existing service before the first deployment. Do not delete the apex domain or unrelated records. Cloudflare provisions the custom-domain DNS record and TLS certificate when binding succeeds.
 5. Merge the deployment changes into `main`. The workflow validates and then deploys. Alternatively, run **Validate and deploy atlas** with `workflow_dispatch` on `main` once the workflow exists on the default branch.
 
-First production deployment completed on 2026-09-16 through local Wrangler OAuth. The active zone and absence of an existing Worker custom-domain binding were verified before deployment; Wrangler successfully bound the hostname. Version: eda0b372-e890-4dae-ab64-5426b06612b1. GitHub now has CLOUDFLARE_ACCOUNT_ID; automatic deployment still requires CLOUDFLARE_API_TOKEN. Do not store the short-lived local OAuth token in GitHub.
+First production deployment completed on 2026-09-16 through local Wrangler OAuth. The active zone and absence of an existing Worker custom-domain binding were verified before deployment; Wrangler successfully bound the hostname. Version: eda0b372-e890-4dae-ab64-5426b06612b1. GitHub has both CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN. GitHub Actions run 35147951191 successfully validated and deployed production after token setup. Do not store the short-lived local OAuth token in GitHub.
 
 ## Pipeline behavior
 

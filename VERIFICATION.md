@@ -61,3 +61,7 @@ The sample is schematic and has no live operational data.
 - Published version eda0b372-e890-4dae-ab64-5426b06612b1 to datacenter-atlas.h3ct0rjs.dev.
 - HTTPS smoke script verified the current HTML and both hashed assets. Browser checked room → server → room → floor → room; inspected the rendered room screenshot.
 - GitHub CLOUDFLARE_ACCOUNT_ID is configured. A dedicated CLOUDFLARE_API_TOKEN is still required for automatic deployments; PR #7 remains open. Local OAuth credentials have not been copied to GitHub.
+
+## Airflow and containment — 2026-09-18
+
+Added tests for inward rack orientation, rotated rear PDUs, pause/visibility and independent airflow controls, above-floor slab supply, and disposal across architecture changes. All 24 tests and the production build pass. In-app browser: raised/slab switching, pause/play, top/perspective views, aisle labels, and isolation checked. At 375 × 812 the controls remain within the viewport with no horizontal overflow. No browser console errors were recorded. Physical touch and exhaustive assistive-technology testing remain pending.

@@ -23,7 +23,12 @@ for(let n=0;n<4;n++)equipment.push({id:`CRAC-${n+1}`,name:`Cooling unit ${n+1}`,
 for(let n=0;n<2;n++)equipment.push({id:`UPS-${n+1}`,name:`UPS ${n+1}`,system:'power',kind:'Uninterruptible power supply',position:[-5.2,1.15,(n-.5)*2.2],size:[1.3,2.3,1.45],description:'A UPS provides short-term backup power and power conditioning. Actual capacity and runtime depend on the equipment and site design.',specs:{System:'Electrical backup',Capacity:'Not specified',Runtime:'Not specified'}});
 export const networkLinks=equipment.filter(e=>e.kind==='Top-of-rack switch').flatMap(leaf=>['SPINE-1','SPINE-2'].map(spine=>({source:leaf.id,target:spine})));
 export function searchEquipment(query:string,visible:System[]=systems.map(s=>s.id)) {const q=query.trim().toLowerCase();return equipment.filter(e=>visible.includes(e.system)&&`${e.id} ${e.name} ${e.kind} ${e.rack??''}`.toLowerCase().includes(q));}
-export function positionFor(e:Equipment,explode:number):[number,number,number] {return[e.position[0]*(1+explode*.6),e.position[1]+(e.system==='network'?explode*1.5:0),e.position[2]*(1+explode*.6)];}
+export function rackYaw(e:Equipment):number {return (e.rack??(e.system==='racks'?e.id:'')).startsWith('B')?Math.PI:0;}
+export function positionFor(e:Equipment,explode:number):[number,number,number] {
+ const rack=e.rack&&equipment.find(r=>r.id===e.rack),rotated=rack&&rackYaw(e)!==0;
+ const x=rotated?2*rack.position[0]-e.position[0]:e.position[0],z=rotated?2*rack.position[2]-e.position[2]:e.position[2];
+ return [x*(1+explode*.6),e.position[1]+(e.system==='network'?explode*1.5:0),z*(1+explode*.6)];
+}
 
 export function rackSlots(rackId:string):{u:number;equipmentId?:string}[] {
  if(!equipment.some(e=>e.id===rackId&&e.system==='racks'))return [];

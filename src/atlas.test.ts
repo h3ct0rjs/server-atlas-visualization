@@ -9,3 +9,13 @@ test('equipment IDs, parents, and fabric endpoints remain valid',()=>{
 });
 test('search respects system filters and case-insensitive rack identifiers',()=>{assert.ok(searchEquipment('a01').every(e=>e.id.startsWith('A01')));assert.equal(searchEquipment('a01',['compute']).length,6);assert.equal(searchEquipment('missing-device').length,0);assert.equal(searchEquipment('',[]).length,0);});
 test('server geometry stays inside its rack in the assembled view',()=>{for(const e of equipment.filter(e=>e.system==='compute')){const rack=equipment.find(r=>r.id===e.rack)!;for(let axis=0;axis<3;axis++)assert.ok(Math.abs(e.position[axis]-rack.position[axis])+e.size[axis]/2<=rack.size[axis]/2);assert.deepEqual(positionFor(e,0),e.position);}});
+
+test('rack rows face the cold aisle and rear PDUs rotate with their rack',async()=>{
+ const {rackYaw}=await import('./atlas.ts');
+ for(const rack of equipment.filter(e=>e.system==='racks')){
+  assert.ok(Math.cos(rackYaw(rack))*rack.position[2]<0);
+  const pdu=equipment.find(e=>e.rack===rack.id&&e.kind==='Rack power distribution')!;
+  assert.equal(rackYaw(pdu),rackYaw(rack));
+  assert.ok((positionFor(pdu,0)[2]-rack.position[2])*rack.position[2]>0);
+ }
+});
