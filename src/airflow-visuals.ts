@@ -107,6 +107,7 @@ export function createAirflowVisuals(color:(id:string)=>string){
  }
  return {group,update(options:AirflowOptions,deltaSeconds:number){
   if(disposed)return false;
+  if(!options.active&&mode===undefined){group.visible=false;return false;}
   const rebuilt=mode!==options.mode;if(rebuilt)rebuild(options.mode);
   const changed=!last||Object.keys(options).some(k=>options[k as keyof AirflowOptions]!==last![k as keyof AirflowOptions]);
   group.visible=options.active;

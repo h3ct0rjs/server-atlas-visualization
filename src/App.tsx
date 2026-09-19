@@ -1,8 +1,10 @@
-import {useCallback,useEffect,useState} from 'react';
+import {lazy,Suspense,useCallback,useEffect,useState} from 'react';
 import {Box,Server,Network,Zap,Wind,Search,RotateCcw,Layers,ArrowUpRight,Focus,X,ChevronRight,Eye,SlidersHorizontal} from 'lucide-react';
-import DetailExplorer from './DetailExplorer';
-import Scene,{type SceneState} from './Scene';
-import {roomPanels,type RoomFloorMode} from './room-floor';
+import ModelBoundary from './ModelBoundary';
+const DetailExplorer=lazy(()=>import('./DetailExplorer'));
+import Scene from './Scene';
+import type {SceneState} from './Scene';
+import {roomPanels,type RoomFloorMode} from './room-panel-data';
 import {rackSlots} from './atlas';
 import {floorLoadProperties} from './floor-loads';
 import {equipment,systems,searchEquipment,type System} from './atlas';
@@ -20,7 +22,7 @@ export default function App(){
  function toggle(id:System){setState(s=>({...s,visible:s.visible.includes(id)?s.visible.filter(x=>x!==id):[...s.visible,id],isolate:false,selected:null}));}
  function liftPanel(id:string){const p=roomPanels.find(p=>p.id===id);if(!p||state.floorMode!=='raised')return;if(p.occupied){setNotice(`${p.name} supports equipment; choose an unloaded service panel.`);return;}setPanel(id);setNotice(`${p.name} ${state.liftedPanels.includes(id)?'reseated':'lifted'}.`);setState(s=>({...s,liftedPanels:s.liftedPanels.includes(id)?s.liftedPanels.filter(p=>p!==id):[...s.liftedPanels,id]}));}
  function reset(){setNotice('');setState(s=>({...initial,reset:s.reset+1}));setQuery('');}
- if(explorer)return <DetailExplorer key={explorer} kind={explorer} onClose={closeExplorer}/>;
+ if(explorer)return <ModelBoundary key={explorer} onReturn={closeExplorer}><Suspense fallback={<section className="model-loading" role="status" aria-live="polite"><p>Loading {explorer==='server'?'server':'floor'} explorer…</p><button onClick={closeExplorer}>Return to room</button></section>}><DetailExplorer kind={explorer} onClose={closeExplorer}/></Suspense></ModelBoundary>;
  return <main className="atlas">
   <header className="masthead"><div className="brand"><Box size={26} strokeWidth={1.5}/><div><h1>Datacenter Atlas</h1><p>AN INTERACTIVE INFRASTRUCTURE EXPLORER</p></div></div><nav className="explorer-nav" aria-label="Detailed explorers"><button onClick={()=>openExplorer('server')}>Inside a server</button><button onClick={()=>openExplorer('floor')}>Floor systems</button><button aria-pressed={airSettings} onClick={()=>{setAirSettings(v=>!v);setSettings(false);setState(s=>({...s,airflow:true}));}}>Airflow tour</button><button aria-pressed={settings} onClick={()=>{setSettings(v=>!v);setAirSettings(false);}}>Room settings</button></nav></header>
   <div className="workspace">
@@ -33,7 +35,7 @@ export default function App(){
     <div className="sidebar-foot"><span className="mono">REFERENCE MODEL / 01</span><p>Generic equipment. No live telemetry.</p></div>
    </aside>
    <section className="viewport" aria-label="Datacenter visualization">
-    <Scene state={state} onSelect={choose} onPanel={liftPanel}/>
+    <ModelBoundary><Scene state={state} onSelect={choose} onPanel={liftPanel}/></ModelBoundary>
     <div className="room-label"><span className="eyebrow">FACILITY / SAMPLE 01</span><h2>The server room</h2><p>{state.isolate?'Floor hidden during isolation':state.explode>0?'Floor hidden in separated view':state.floorMode==='raised'?`Raised floor · ${state.liftedPanels.length} panels lifted`:'Slab floor · equipment at slab level'}</p></div>
     <div className="view-switch" aria-label="Camera view"><button aria-pressed={state.view==='perspective'} onClick={()=>setState(s=>({...s,view:'perspective'}))}>3D view</button><button aria-pressed={state.view==='top'} onClick={()=>setState(s=>({...s,view:'top'}))}>Top view</button></div>
     <button className="mobile-explore" onClick={()=>setMobile(!mobile)}><SlidersHorizontal size={17}/>Explore equipment</button>

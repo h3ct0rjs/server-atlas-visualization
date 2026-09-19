@@ -62,3 +62,11 @@ test('aisle sprites face the camera and release label textures once across rebui
   flow.dispose();flow.dispose();assert.equal(releases,3);
  }finally{if(previous)Object.defineProperty(globalThis,'document',previous);else Reflect.deleteProperty(globalThis,'document');}
 });
+
+test('inactive airflow defers allocation until first use',()=>{
+ const airflow=createAirflowVisuals(()=> '#778899');
+ airflow.update({mode:'raised',supply:true,returnAir:true,containment:true,active:false,playing:true},.016);
+ assert.equal(airflow.group.children.length,0);
+ airflow.update({mode:'raised',supply:true,returnAir:true,containment:true,active:true,playing:true},.016);
+ assert.ok(airflow.group.children.length>0);airflow.dispose();
+});

@@ -1,3 +1,5 @@
+import {disposeSceneResources} from './scene-resources';
+import {profileScene} from './scene-profile';
 import {pickVisible} from './scene-picking';
 import {useEffect,useRef,useState} from 'react';
 import * as T from 'three';
@@ -17,7 +19,7 @@ export default function Scene({state,onSelect,onPanel}:{state:SceneState;onSelec
   renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=T.SRGBColorSpace;el.appendChild(renderer.domElement);
   renderer.domElement.setAttribute('aria-label','Interactive datacenter model. Drag to orbit, scroll to zoom. Select equipment in the inventory for keyboard access.');
   const styles=getComputedStyle(document.documentElement),color=(name:string)=>styles.getPropertyValue(`--color-${name}`).trim();
-  const scene=new T.Scene();scene.background=new T.Color(color('canvas'));
+  const scene=new T.Scene();const profile=profileScene('room',renderer,scene);scene.background=new T.Color(color('canvas'));
   const camera=new T.PerspectiveCamera(38,1,.1,150),controls=new OrbitControls(camera,renderer.domElement);
   controls.enableDamping=false;controls.minDistance=4;controls.maxDistance=42;controls.maxPolarAngle=Math.PI*.49;
   scene.add(new T.HemisphereLight(0xffffff,0x8d99a5,2.4));const light=new T.DirectionalLight(0xffffff,3);light.position.set(5,12,7);scene.add(light);
@@ -52,7 +54,7 @@ export default function Scene({state,onSelect,onPanel}:{state:SceneState;onSelec
   const onDown=(e:PointerEvent)=>{down={x:e.clientX,y:e.clientY};downTime=Date.now();};
   const onUp=(e:PointerEvent)=>{if(Math.hypot(e.clientX-down.x,e.clientY-down.y)>6||Date.now()-downTime>500)return;const rect=el.getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);ray.setFromCamera(pointer,camera);const hit=pickVisible(ray,[...meshes,...floor.tiles.values()]);if(hit){if(hit.object.userData.floorPanel)panelPick.current(hit.object.userData.floorPanel);else select.current(hit.object.userData.id);}};
   renderer.domElement.addEventListener('pointerdown',onDown);renderer.domElement.addEventListener('pointerup',onUp);
-  function draw(){renderer.render(scene,camera);}controls.addEventListener('change',draw);
+  function draw(){const started=performance.now();renderer.render(scene,camera);profile.draw(performance.now()-started);}controls.addEventListener('change',draw);
   function tick(){frame=requestAnimationFrame(tick);const now=performance.now(),delta=(now-previous)/1000;previous=now;const s=current.current;
    const animated=airflow.update({mode:s.floorMode,supply:s.supply,returnAir:s.returnAir,containment:s.containment,active:s.airflow&&!s.isolate&&s.explode===0&&s.visible.includes('racks')&&s.visible.includes('cooling'),playing:s.playing&&!motion.matches&&!document.hidden},delta);
    if(s===last){if(animated)draw();return;}
@@ -64,7 +66,7 @@ export default function Scene({state,onSelect,onPanel}:{state:SceneState;onSelec
    lineGeometry.setAttribute('position',new T.Float32BufferAttribute(vertices,3));lineGeometry.computeBoundingSphere();last=s;draw();
   }fit();tick();
   const lost=(event:Event)=>{event.preventDefault();setError('The 3D graphics context was lost. Reload the page to restore the model.');};renderer.domElement.addEventListener('webglcontextlost',lost);
-  return()=>{cancelAnimationFrame(frame);airflow.dispose();resize.disconnect();controls.dispose();renderer.domElement.removeEventListener('pointerdown',onDown);renderer.domElement.removeEventListener('pointerup',onUp);renderer.domElement.removeEventListener('webglcontextlost',lost);const geometries=new Set<T.BufferGeometry>();scene.traverse(o=>{if((o instanceof T.Mesh||o instanceof T.LineSegments)&&!o.userData.sharedServerGeometry)geometries.add(o.geometry);});geometries.forEach(g=>g.dispose());servers.dispose();const allMaterials=new Set<T.Material>(materials);scene.traverse(o=>{if(o instanceof T.Mesh){const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>allMaterials.add(m));}});const textures=new Set<T.Texture>();allMaterials.forEach(m=>{if(m instanceof T.MeshStandardMaterial&&m.map)textures.add(m.map);m.dispose();});textures.forEach(t=>t.dispose());lineMaterial.dispose();(grid.material as T.Material).dispose();renderer.dispose();renderer.domElement.remove();};
+  return()=>{cancelAnimationFrame(frame);airflow.dispose();resize.disconnect();controls.removeEventListener('change',draw);controls.dispose();renderer.domElement.removeEventListener('pointerdown',onDown);renderer.domElement.removeEventListener('pointerup',onUp);renderer.domElement.removeEventListener('webglcontextlost',lost);disposeSceneResources(scene);servers.dispose();renderer.dispose();renderer.domElement.remove();profile.dispose();};
  },[]);
  return <div className="scene" ref={host}>{error&&<p className="scene-error" role="alert">{error}</p>}</div>;
 }
