@@ -1,3 +1,5 @@
+import {disposeSceneResources} from './scene-resources';
+import {profileScene} from './scene-profile';
 import {pickVisible} from './scene-picking';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import * as T from 'three';
@@ -20,7 +22,7 @@ function DetailScene({parts,state,onSelect,kind,mode}:{parts:Part[];state:ViewSt
  setError('');renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=T.SRGBColorSpace;el.appendChild(renderer.domElement);
  renderer.domElement.setAttribute('aria-label',`${kind==='server'?'Server internals':'Floor cutaway'} model. Drag to orbit and scroll to zoom. Use the component list for keyboard selection.`);
  const css=getComputedStyle(document.documentElement),color=(id:string)=>css.getPropertyValue(`--color-${id}`).trim();
- const scene=new T.Scene();scene.background=new T.Color(color('canvas'));
+ const scene=new T.Scene();const profile=profileScene(kind,renderer,scene);scene.background=new T.Color(color('canvas'));
  scene.add(new T.HemisphereLight(0xffffff,0x83909b,2.6));const sun=new T.DirectionalLight(0xffffff,3);sun.position.set(3,9,6);scene.add(sun);
  const camera=new T.PerspectiveCamera(38,1,.1,200),orbit=new OrbitControls(camera,renderer.domElement);orbit.minDistance=3;orbit.maxDistance=80;orbit.maxPolarAngle=Math.PI*.8;
  const objects=new Map<string,T.Group>(),hits:T.Mesh[]=[];
@@ -62,7 +64,7 @@ function DetailScene({parts,state,onSelect,kind,mode}:{parts:Part[];state:ViewSt
   const anchors=parts.filter(p=>(p.id===s.selected||representatives.has(p.id))&&objects.get(p.id)!.visible).flatMap(p=>{const v=new T.Box3().setFromObject(objects.get(p.id)!).getCenter(new T.Vector3()).project(camera);if(v.z< -1||v.z>1||Math.abs(v.x)>1.2||Math.abs(v.y)>1.2)return [];return [{id:p.id,name:p.name,x:(v.x+1)*el.clientWidth/2,y:(1-v.y)*el.clientHeight/2,selected:p.id===s.selected}];});
   for(const label of placeLabels(anchors,el.clientWidth,el.clientHeight)){const button=labelButtons.get(label.id)!;button.style.cssText=`left:${label.left}px;top:${label.top}px;width:${label.width}px;height:${label.height}px`;button.setAttribute('aria-pressed',String(label.selected));const line=document.createElementNS('http://www.w3.org/2000/svg','line');line.setAttribute('x1',String(label.x));line.setAttribute('y1',String(label.y));line.setAttribute('x2',String(label.left+label.width/2));line.setAttribute('y2',String(label.top+label.height/2));if(label.selected)line.classList.add('selected');leaders.appendChild(line);}
  }
- function draw(){renderer.render(scene,camera);updateLabels();}orbit.addEventListener('change',draw);
+ function draw(){const started=performance.now();renderer.render(scene,camera);profile.draw(performance.now()-started);updateLabels();}orbit.addEventListener('change',draw);
  const resize=new ResizeObserver(()=>{renderer.setSize(el.clientWidth,el.clientHeight);fit();draw();});resize.observe(el);
  const ray=new T.Raycaster();let down=[0,0],downAt=0;
  const onDown=(e:PointerEvent)=>{down=[e.clientX,e.clientY];downAt=Date.now();};
@@ -70,7 +72,7 @@ function DetailScene({parts,state,onSelect,kind,mode}:{parts:Part[];state:ViewSt
  renderer.domElement.addEventListener('pointerdown',onDown);renderer.domElement.addEventListener('pointerup',onUp);
  function tick(){frame=requestAnimationFrame(tick);const s=latest.current;if(s===previous)return;for(const p of parts){const g=objects.get(p.id)!;g.position.set(...partPosition(p,s.separation));g.visible=kind==='server'?(p.id==='lid'?!s.open:p.id==='shroud'?s.shroud:true):floorPartVisible(p,parts,s.open,s.selected);g.traverse(o=>{if(o instanceof T.Mesh){const materials=Array.isArray(o.material)?o.material:[o.material];for(const material of materials)if(material instanceof T.MeshStandardMaterial){material.emissive.set(s.selected===p.id?color('selected'):0x000000);material.emissiveIntensity=.35;}}});}updateConnections(s);arrows.visible=s.air;if(s.reset!==previous?.reset||s.separation!==previous?.separation||(s.focus&&s.selected!==previous?.selected))fit(s.reset===previous?.reset);previous=s;draw();}fit();tick();
 
- return()=>{cancelAnimationFrame(frame);resize.disconnect();orbit.dispose();renderer.domElement.removeEventListener('pointerdown',onDown);renderer.domElement.removeEventListener('pointerup',onUp);scene.traverse(o=>{if(o instanceof T.Mesh||o instanceof T.Line){o.geometry.dispose();const materials=Array.isArray(o.material)?o.material:[o.material];materials.forEach(m=>m.dispose());}});renderer.dispose();renderer.domElement.remove();overlay.remove();};
+ return()=>{cancelAnimationFrame(frame);resize.disconnect();orbit.removeEventListener('change',draw);orbit.dispose();renderer.domElement.removeEventListener('pointerdown',onDown);renderer.domElement.removeEventListener('pointerup',onUp);disposeSceneResources(scene);renderer.dispose();renderer.domElement.remove();profile.dispose();overlay.remove();};
  },[parts,kind,mode]);
  return <div ref={host} className="detail-canvas">{error&&<p className="scene-error" role="alert">{error}</p>}</div>;
 }

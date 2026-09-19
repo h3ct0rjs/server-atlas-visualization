@@ -46,7 +46,7 @@ Completed the geometry/label milestone with two agents. Completed: schematic int
 - [ ] Check keyboard navigation, focus visibility, control names, and component selection without a pointer.
 - [ ] Check touch selection versus orbit/pinch gestures on a physical device when available.
 - [ ] Check camera framing for isolated equipment and exploded assemblies at narrow aspect ratios.
-- [ ] Inspect browser errors, rendering performance, and GPU resource cleanup during repeated explorer changes.
+- [x] Inspect browser errors, rendering submission time, and bounded GPU resource cleanup during repeated explorer changes (issue #3; long-run/device profiling remains).
 - [ ] Resolve meaningful regressions with targeted tests; rerun the build after changes.
 - [x] Update `VERIFICATION.md` with actual outcomes and remaining limitations.
 
@@ -100,7 +100,7 @@ See `docs/model-and-floor-research.md` for the existing source shortlist and fin
 
 - [x] Add direct links to the server and floor explorers so users can open and refresh the intended view.
 - [x] Make new explorer entry points easy to discover from the room and selected equipment.
-- [ ] Review bundle splitting and lazy loading; the production build currently reports a large-bundle advisory.
+- [x] Lazy-load detail explorer UI, verify chunk delivery, and measure repeated scene resource lifetime (issue #3); shared room geometry still produces a large-bundle advisory.
 - [ ] Keep the README, research notes, asset manifest, verification record, and this backlog aligned with shipped behavior.
 
 Cloudflare hosting for datacenter-atlas.h3ct0rjs.dev is now requested. Purchasing models and connecting live infrastructure remain outside the requested scope.

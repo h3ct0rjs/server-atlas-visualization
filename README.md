@@ -75,3 +75,7 @@ Cloudflare Workers Static Assets is configured for `datacenter-atlas.h3ct0rjs.de
 Open **Airflow tour** for independently controlled supply (blue spheres), return (amber dashes), and transparent cold-aisle containment. Both rack rows face inward; their equipment, rear PDUs, and clearance guides rotate together. Switch between underfloor supply on a raised floor and overhead supply over a slab. Pause preserves directional arrows; reduced-motion preferences and background tabs stop movement. Isolation, separation, or hiding racks/cooling hides the overlay. These authored paths explain circulation, not CFD or temperature predictions.
 
 Reference: [DOE Best Practices Guide for Energy-Efficient Data Center Design](https://www.energy.gov/sites/default/files/2024-07/best-practice-guide-data-center-design_0.pdf).
+
+### Loading and diagnostics
+
+Server/floor explorer UI loads on demand with an accessible loading message and recovery controls. The room retains its shared detailed geometry. `npm run build` checks the lazy import boundary; deployment verification covers lazy assets too. Append `?profile=1` before the hash to enable local scene diagnostics (no telemetry). See [measured performance and limitations](docs/performance.md).

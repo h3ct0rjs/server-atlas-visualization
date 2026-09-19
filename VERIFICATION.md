@@ -79,3 +79,7 @@ Validated on the local Vite preview in the in-app browser at 1280 × 720, based 
 - All 31 tests and the production build pass. Browser console error log was empty. Existing large-bundle advisory remains. Physical touch gestures and exhaustive accessibility/performance checks remain in issues #2/#3.
 
 Repeatable browser sequence: hide networking, close server covers, lift a free panel in Room settings, enable cutaway/clearances, select and isolate a rack, visit each detail explorer, then return and inspect those settings. In each explorer search for a nonexistent part and recover/reset. Exercise direct hashes, refresh and Back/Forward. In room top view click an unloaded panel twice, enable cutaway and click the empty space, then click an exposed loaded panel edge.
+
+## Issue #3 loading and resource lifetime — 2026-09-19
+
+All 34 tests, production build/chunk assertions, Wrangler dry-run and local verification of all four eager/lazy JS/CSS assets pass. Five baseline cycles and five cycles after cleanup showed stable renderer/scene resources; a final-build round trip matched. Detail loading status was checked with a two-second local delay on both direct routes. Room selection/isolation survived navigation. Browser errors were absent. See [performance measurements](docs/performance.md) for payload sizes, device context, resource counts, timing caveats and remaining limitations.
