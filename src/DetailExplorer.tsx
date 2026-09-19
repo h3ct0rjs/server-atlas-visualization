@@ -1,3 +1,4 @@
+import {pickVisible} from './scene-picking';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import * as T from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
@@ -65,7 +66,7 @@ function DetailScene({parts,state,onSelect,kind,mode}:{parts:Part[];state:ViewSt
  const resize=new ResizeObserver(()=>{renderer.setSize(el.clientWidth,el.clientHeight);fit();draw();});resize.observe(el);
  const ray=new T.Raycaster();let down=[0,0],downAt=0;
  const onDown=(e:PointerEvent)=>{down=[e.clientX,e.clientY];downAt=Date.now();};
- const onUp=(e:PointerEvent)=>{if(Math.hypot(e.clientX-down[0],e.clientY-down[1])>6||Date.now()-downAt>600)return;const r=el.getBoundingClientRect();ray.setFromCamera(new T.Vector2((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1),camera);const hit=ray.intersectObjects(hits.filter(h=>{let o:T.Object3D|null=h;while(o){if(!o.visible)return false;o=o.parent;}return true;}),false)[0];if(hit)pick.current(hit.object.userData.id);};
+ const onUp=(e:PointerEvent)=>{if(Math.hypot(e.clientX-down[0],e.clientY-down[1])>6||Date.now()-downAt>600)return;const r=el.getBoundingClientRect();ray.setFromCamera(new T.Vector2((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1),camera);const hit=pickVisible(ray,hits);if(hit)pick.current(hit.object.userData.id);};
  renderer.domElement.addEventListener('pointerdown',onDown);renderer.domElement.addEventListener('pointerup',onUp);
  function tick(){frame=requestAnimationFrame(tick);const s=latest.current;if(s===previous)return;for(const p of parts){const g=objects.get(p.id)!;g.position.set(...partPosition(p,s.separation));g.visible=kind==='server'?(p.id==='lid'?!s.open:p.id==='shroud'?s.shroud:true):floorPartVisible(p,parts,s.open,s.selected);g.traverse(o=>{if(o instanceof T.Mesh){const materials=Array.isArray(o.material)?o.material:[o.material];for(const material of materials)if(material instanceof T.MeshStandardMaterial){material.emissive.set(s.selected===p.id?color('selected'):0x000000);material.emissiveIntensity=.35;}}});}updateConnections(s);arrows.visible=s.air;if(s.reset!==previous?.reset||s.separation!==previous?.separation||(s.focus&&s.selected!==previous?.selected))fit(s.reset===previous?.reset);previous=s;draw();}fit();tick();
 

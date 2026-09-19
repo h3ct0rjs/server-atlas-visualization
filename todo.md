@@ -1,6 +1,6 @@
 # Datacenter Atlas — pending work
 
-Updated: 2026-09-18
+Updated: 2026-09-19
 
 Server internals, room floor integration, and rack detail are complete. The next priorities are verification, floor-model consistency, airflow/containment, and service routing. The remaining items form the backlog; they are not all committed to the next development pass.
 
@@ -38,9 +38,9 @@ Completed the geometry/label milestone with two agents. Completed: schematic int
 ## 2. Verification and usability
 
 - [x] Check server selection, search, independent covers, separation, airflow, presets, and focus in the browser.
-- [ ] Complete reset and return-to-room state preservation regression coverage.
+- [x] Complete reset and return-to-room state preservation regression coverage (issue #1).
 - [x] Check both floor modes, panel removal, service selection, and airflow in the browser.
-- [ ] Complete floor search and reset regression coverage.
+- [x] Complete floor search and reset regression coverage (issue #1).
 - [x] Inspect desktop screenshots and measure responsive control/label bounds at 320 / 375 / 414 / 768 px.
 - [ ] Complete visual inspection of every open detail panel at narrow widths.
 - [ ] Check keyboard navigation, focus visibility, control names, and component selection without a pointer.

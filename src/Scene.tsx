@@ -1,3 +1,4 @@
+import {pickVisible} from './scene-picking';
 import {useEffect,useRef,useState} from 'react';
 import * as T from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
@@ -49,7 +50,7 @@ export default function Scene({state,onSelect,onPanel}:{state:SceneState;onSelec
   const resize=new ResizeObserver(()=>{const w=el.clientWidth,h=el.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();fit();draw();});resize.observe(el);
   const ray=new T.Raycaster(),pointer=new T.Vector2();let down={x:0,y:0},downTime=0;
   const onDown=(e:PointerEvent)=>{down={x:e.clientX,y:e.clientY};downTime=Date.now();};
-  const onUp=(e:PointerEvent)=>{if(Math.hypot(e.clientX-down.x,e.clientY-down.y)>6||Date.now()-downTime>500)return;const rect=el.getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);ray.setFromCamera(pointer,camera);const hit=ray.intersectObjects([...meshes,...floor.tiles.values()].filter(m=>{let o:T.Object3D|null=m;while(o){if(!o.visible)return false;o=o.parent;}return true;}),true)[0];if(hit){if(hit.object.userData.floorPanel)panelPick.current(hit.object.userData.floorPanel);else select.current(hit.object.userData.id);}};
+  const onUp=(e:PointerEvent)=>{if(Math.hypot(e.clientX-down.x,e.clientY-down.y)>6||Date.now()-downTime>500)return;const rect=el.getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);ray.setFromCamera(pointer,camera);const hit=pickVisible(ray,[...meshes,...floor.tiles.values()]);if(hit){if(hit.object.userData.floorPanel)panelPick.current(hit.object.userData.floorPanel);else select.current(hit.object.userData.id);}};
   renderer.domElement.addEventListener('pointerdown',onDown);renderer.domElement.addEventListener('pointerup',onUp);
   function draw(){renderer.render(scene,camera);}controls.addEventListener('change',draw);
   function tick(){frame=requestAnimationFrame(tick);const now=performance.now(),delta=(now-previous)/1000;previous=now;const s=current.current;
