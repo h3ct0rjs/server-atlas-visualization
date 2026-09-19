@@ -20,7 +20,7 @@ export default function App(){
  function toggle(id:System){setState(s=>({...s,visible:s.visible.includes(id)?s.visible.filter(x=>x!==id):[...s.visible,id],isolate:false,selected:null}));}
  function liftPanel(id:string){const p=roomPanels.find(p=>p.id===id);if(!p||state.floorMode!=='raised')return;if(p.occupied){setNotice(`${p.name} supports equipment; choose an unloaded service panel.`);return;}setPanel(id);setNotice(`${p.name} ${state.liftedPanels.includes(id)?'reseated':'lifted'}.`);setState(s=>({...s,liftedPanels:s.liftedPanels.includes(id)?s.liftedPanels.filter(p=>p!==id):[...s.liftedPanels,id]}));}
  function reset(){setNotice('');setState(s=>({...initial,reset:s.reset+1}));setQuery('');}
- if(explorer)return <DetailExplorer kind={explorer} onClose={closeExplorer}/>;
+ if(explorer)return <DetailExplorer key={explorer} kind={explorer} onClose={closeExplorer}/>;
  return <main className="atlas">
   <header className="masthead"><div className="brand"><Box size={26} strokeWidth={1.5}/><div><h1>Datacenter Atlas</h1><p>AN INTERACTIVE INFRASTRUCTURE EXPLORER</p></div></div><nav className="explorer-nav" aria-label="Detailed explorers"><button onClick={()=>openExplorer('server')}>Inside a server</button><button onClick={()=>openExplorer('floor')}>Floor systems</button><button aria-pressed={airSettings} onClick={()=>{setAirSettings(v=>!v);setSettings(false);setState(s=>({...s,airflow:true}));}}>Airflow tour</button><button aria-pressed={settings} onClick={()=>{setSettings(v=>!v);setAirSettings(false);}}>Room settings</button></nav></header>
   <div className="workspace">

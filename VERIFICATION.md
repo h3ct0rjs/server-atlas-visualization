@@ -65,3 +65,17 @@ The sample is schematic and has no live operational data.
 ## Airflow and containment — 2026-09-18
 
 Added tests for inward rack orientation, rotated rear PDUs, pause/visibility and independent airflow controls, above-floor slab supply, and disposal across architecture changes. All 24 tests and the production build pass. In-app browser: raised/slab switching, pause/play, top/perspective views, aisle labels, and isolation checked. At 375 × 812 the controls remain within the viewport with no horizontal overflow. No browser console errors were recorded. Physical touch and exhaustive assistive-technology testing remain pending.
+
+## Issue #1 interaction regressions — 2026-09-19
+
+Validated on the local Vite preview in the in-app browser at 1280 × 720, based on main merge a3d1281.
+
+- Room → server → room and room → floor → room preserved Rack A01 selection/isolation, disabled networking filter, closed server covers, raised architecture, lifted panel 11.10, cutaway, and clearance guides. A separate round trip preserved slab mode. Changing the detail floor mode did not change the room architecture.
+- Both detail explorers recovered from a no-match search. Reset cleared search, selection, separation and overlays; server labels/lid/shroud returned to defaults. Floor reset retains the chosen architecture; it resets the component view.
+- Direct #server and #floor routes and refresh rendered the intended explorer. Browser Back/Forward restored the intended room/floor route. Switching directly from a searched server explorer to #floor started a fresh floor catalogue. Explorer components now have route-specific keys to prevent cross-explorer state leakage.
+- Refresh starts a fresh in-memory session; room-state preservation is verified for navigation within the session, not across reloads.
+- Canvas clicks in top view lifted unloaded panel 14.9, reseated the lifted panel, ignored its cutaway opening, and refused to lift equipment-bearing panel 11.8 with the explanatory status message.
+- Added real Three.js raycast tests covering hidden descendants/ancestors, lifted hit height, service-seal picking, cutaway misses, loaded-panel protection, and hidden/slab floors. Shared picking checks the visibility of each returned hit and all its ancestors because Three.js raycasting does not enforce visibility.
+- All 31 tests and the production build pass. Browser console error log was empty. Existing large-bundle advisory remains. Physical touch gestures and exhaustive accessibility/performance checks remain in issues #2/#3.
+
+Repeatable browser sequence: hide networking, close server covers, lift a free panel in Room settings, enable cutaway/clearances, select and isolate a rack, visit each detail explorer, then return and inspect those settings. In each explorer search for a nonexistent part and recover/reset. Exercise direct hashes, refresh and Back/Forward. In room top view click an unloaded panel twice, enable cutaway and click the empty space, then click an exposed loaded panel edge.
